@@ -375,7 +375,7 @@ with st.sidebar:
     # model_status_placeholder.empty()
 
     file_uploader = st.file_uploader("Select Data File (csv,parquet)",
-                                     type=[".csv", ".parquet"],
+                                     
                                      key=f"file_uploader_{st.session_state['file_uploader_key']}")
     csv_separator_input = st.text_input("CSV Separator (auto-detected)", value=';', placeholder="Usually auto-detected")
 

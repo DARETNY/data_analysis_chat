@@ -1,0 +1,14 @@
+[project]
+name = "data-analysis-chat"
+version = "0.1.0"
+description = "Add your description here"
+requires-python = ">=3.9"
+dependencies = [
+    "pip>=25.1.1",
+    "streamlit",
+    "pandas",
+    "google-generativeai",
+    "matplotlib>=3.9.4",
+    "seaborn>=0.13.2",
+    "json"
+]

@@ -24,8 +24,8 @@ import warnings
 warnings.filterwarnings("ignore", category=UserWarning, module="google.generativeai")
 
 # KULLANICININ SAĞLADIĞI ANAHTAR (USER-PROVIDED KEY)
-PROVIDED_API_KEY =os.environ.get("GOOGLE_API_KEY", None)
-GOOGLE_API_KEY = os.environ.get("GOOGLE_API_KEY", None)
+PROVIDED_API_KEY =os.getenv("PROVIDED_API_KEY")
+GOOGLE_API_KEY = os.getenv("GOOGLE_API_KEY")
 # Sidebar'da API durumu için yer tutucu
 api_status_placeholder = st.sidebar.empty()
 

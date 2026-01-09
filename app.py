@@ -50,7 +50,7 @@ model = None
 model_status_placeholder = st.sidebar.empty()
 if GOOGLE_API_KEY:
     try:
-        model = genai.GenerativeModel('gemini-1.5-flash-latest')
+        model = genai.GenerativeModel('gemini-1.5-flash')
         model_status_placeholder.success("Google Generative Model successfully loaded.")
     except Exception as e:
         model_status_placeholder.error(f"Failed to initialize Google Generative Model: {e}. Check if API key is correct and model is accessible.")

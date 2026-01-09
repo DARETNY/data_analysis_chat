@@ -5,7 +5,8 @@ st.set_page_config(layout="wide", page_title="Intelligent Data Analyst Assistant
 import pandas as pd
 import io
 import json
-import google.generativeai as genai  # type: ignore
+from google import genai
+from google.genai import types
 import os
 import re
 import sys
@@ -21,17 +22,16 @@ import sqlite3  # SQL için
 from PIL import Image  # type: ignore
 import warnings
 
-warnings.filterwarnings("ignore", category=UserWarning, module="google.generativeai")
-
 # KULLANICININ SAĞLADIĞI ANAHTAR (USER-PROVIDED KEY)
-PROVIDED_API_KEY =os.getenv("PROVIDED_API_KEY")
+PROVIDED_API_KEY = os.getenv("PROVIDED_API_KEY")
 GOOGLE_API_KEY = os.getenv("GOOGLE_API_KEY")
 # Sidebar'da API durumu için yer tutucu
 api_status_placeholder = st.sidebar.empty()
 
+client = None
 try:
     if PROVIDED_API_KEY:
-        genai.configure(api_key=PROVIDED_API_KEY)
+        client = genai.Client(api_key=PROVIDED_API_KEY)
         GOOGLE_API_KEY = PROVIDED_API_KEY
         api_status_placeholder.success("Google API Key (user-provided) successfully configured.")
     else:
@@ -40,7 +40,7 @@ try:
             api_status_placeholder.warning(
                 "WARNING: GOOGLE_API_KEY environment variable not set and not provided in code. AI model will not be accessible.")
         else:
-            genai.configure(api_key=GOOGLE_API_KEY)
+            client = genai.Client(api_key=GOOGLE_API_KEY)
             api_status_placeholder.success("Google API Key (from environment variable) successfully configured.")
 except Exception as e:
     api_status_placeholder.error(f"Error configuring Google API key: {e}.")
@@ -48,10 +48,10 @@ except Exception as e:
 
 model = None
 model_status_placeholder = st.sidebar.empty()
-if GOOGLE_API_KEY:
+if client:
     try:
-        model = genai.GenerativeModel('gemini-1.5-flash')
-        model_status_placeholder.success("Google Generative Model successfully loaded.")
+        model = 'gemini-2.0-flash-exp'
+        model_status_placeholder.success(f"Google Generative Model '{model}' successfully loaded.")
     except Exception as e:
         model_status_placeholder.error(f"Failed to initialize Google Generative Model: {e}. Check if API key is correct and model is accessible.")
 else:
@@ -290,14 +290,13 @@ def process_user_query(message, chat_history, current_df_state, current_schema_s
     current_stream_text = ""
 
     try:
-        response = model.generate_content(full_prompt, stream=True)
-        for chunk in response:
-            if hasattr(chunk, 'text') and chunk.text:
-                current_stream_text += chunk.text
-                message_placeholder.markdown(current_stream_text + "▌")
-
-        llm_full_response_content = current_stream_text  # Sadece LLM'in ürettiği metin
-        message_placeholder.markdown(llm_full_response_content)  # Son hali imleçsiz
+        response = client.models.generate_content(
+            model=model,
+            contents=full_prompt
+        )
+        
+        llm_full_response_content = response.text
+        message_placeholder.markdown(llm_full_response_content)
 
         python_code_match = re.search(r"```python\n(.*?)\n```", llm_full_response_content, re.DOTALL)
         sql_code_match = re.search(r"```sql\n(.*?)\n```", llm_full_response_content, re.DOTALL)

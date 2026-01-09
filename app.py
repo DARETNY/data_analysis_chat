@@ -12,9 +12,6 @@ import sys
 from io import StringIO
 import traceback  # Hata izleme için
 import matplotlib  # type: ignore
-import plotly.express as px  # type: ignore
-import plotly.graph_objects as go  # type: ignore
-
 matplotlib.use('Agg')  # GUI olmayan backend
 import matplotlib.pyplot as plt  # type: ignore
 import seaborn as sns  # type: ignore

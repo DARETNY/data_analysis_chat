@@ -7,8 +7,9 @@ dependencies = [
     "pip>=25.1.1",
     "streamlit",
     "pandas",
-    "google-genai",
+    "google-generativeai",
     "matplotlib>=3.9.4",
     "seaborn>=0.13.2",
-    "pillow"
+    "pillow",
+    "plotly>=5.0.0"
 ]
